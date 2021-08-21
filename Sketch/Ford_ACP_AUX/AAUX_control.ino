@@ -13,58 +13,33 @@ const uint8_t inlineControlPin = 6; // Pin 6 connected to transistor for inline 
 
 InlineControlCommand lastCommand;
 
+#include <SoftwareSerial.h>
+
+SoftwareSerial mySerial(8, 9); // RX, TX
+
 /*
  * Simulate inline control based on value of lastCommand.
  */
 void inline_control_handler() {
   //The shortest duration of digitalWrite that is sensed by iPhone SE is ~60ms.
   if (lastCommand != noCommand) {
-    digitalWrite(inlineControlPin, LOW);
     switch(lastCommand) {
       case playPause:
-        digitalWrite(inlineControlPin, HIGH);
-        delay(100);
-        digitalWrite(inlineControlPin, LOW);
+         mySerial.write("AT+CB\r\n");
         break;
       case nextTrack:
-        digitalWrite(inlineControlPin, HIGH);
-        delay(100);
-        digitalWrite(inlineControlPin, LOW);
-        delay(100);
-        digitalWrite(inlineControlPin, HIGH);
-        delay(100);
-        digitalWrite(inlineControlPin, LOW);
+         mySerial.write("AT+CC\r\n");
         break;
       case prevTrack:
-        digitalWrite(inlineControlPin, HIGH);
-        delay(100);
-        digitalWrite(inlineControlPin, LOW);
-        delay(100);
-        digitalWrite(inlineControlPin, HIGH);
-        delay(100);
-        digitalWrite(inlineControlPin, LOW);
-        delay(100);
-        digitalWrite(inlineControlPin, HIGH);
-        delay(100);
-        digitalWrite(inlineControlPin, LOW);
+        mySerial.write("AT+CD\r\n");
         break;
       case fastForwardTrack:
-        digitalWrite(inlineControlPin, HIGH);
-        delay(100);
-        digitalWrite(inlineControlPin, LOW);
-        delay(100);
-        digitalWrite(inlineControlPin, HIGH);
+         mySerial.write("AT+CC\r\n");
+
         break;
       case rewindTrack:
-        digitalWrite(inlineControlPin, HIGH);
-        delay(100);
-        digitalWrite(inlineControlPin, LOW);
-        delay(100);
-        digitalWrite(inlineControlPin, HIGH);
-        delay(100);
-        digitalWrite(inlineControlPin, LOW);
-        delay(100);
-        digitalWrite(inlineControlPin, HIGH);
+        mySerial.write("AT+CD\r\n");
+
         break;
       case activateSiri:
         digitalWrite(inlineControlPin, HIGH);
@@ -81,6 +56,5 @@ void inline_control_handler() {
  */
 void inline_control_setup() {
   //Setup inline control pin
-  digitalWrite(inlineControlPin, LOW);
-  pinMode(inlineControlPin, OUTPUT);
+  mySerial.begin(9600);
 }
